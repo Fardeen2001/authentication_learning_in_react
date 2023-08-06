@@ -16,56 +16,33 @@ const AuthForm = () => {
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
     setIsLoading(true);
+    let url;
     if (isLogin) {
-      fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBe9W2gQ0ALvLADIMdBgojiAXHX8l7MYwY",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            email: enteredEmail,
-            password: enteredPassword,
-            returnSecureToken: true,
-          }),
-          headers: {
-            "content-type": "application/json",
-          },
-        }
-      ).then((res) => {
-        setIsLoading(false);
-        if (res.ok) {
-          res.json().then((data) => {
-            // console.log(data);
-            // console.log(data.idToken);
-            const loggedinId = data.idToken;
-            console.log(loggedinId);
-          });
-        } else {
-          res.json().then((data) => {
-            let errorMessage = "Authentication Failed!";
-            if (data && data.error && data.error.message) {
-              errorMessage = data.error.message;
-            }
-            alert(errorMessage);
-          });
-        }
-      });
+      url =
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBe9W2gQ0ALvLADIMdBgojiAXHX8l7MYwY";
     } else {
-      fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBe9W2gQ0ALvLADIMdBgojiAXHX8l7MYwY",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            email: enteredEmail,
-            password: enteredPassword,
-            returnSecureToken: true,
-          }),
-          headers: {
-            "content-type": "application/json",
-          },
-        }
-      ).then((res) => {
+      url =
+        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBe9W2gQ0ALvLADIMdBgojiAXHX8l7MYwY";
+    }
+    fetch(
+      url,
+
+      {
+        method: "POST",
+        body: JSON.stringify({
+          email: enteredEmail,
+          password: enteredPassword,
+          returnSecureToken: true,
+        }),
+        headers: {
+          "content-type": "application/json",
+        },
+      }
+    )
+      .then((res) => {
         setIsLoading(false);
         if (res.ok) {
+          return res.json();
         } else {
           res.json().then((data) => {
             let errorMessage = "Authentication failed!";
@@ -75,8 +52,13 @@ const AuthForm = () => {
             alert(errorMessage);
           });
         }
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        alert(error.message);
       });
-    }
   };
 
   return (
