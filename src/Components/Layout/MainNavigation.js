@@ -12,6 +12,7 @@ const MainNavigation = () => {
     authcxt.logout();
     history.replace("/auth");
   };
+
   return (
     <header className={classes.header}>
       <Link to="/">
